@@ -26,7 +26,7 @@ public class TileEntityMJ extends TileEntityBasicTickable {
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
     	
-    	if (capability == MjAPI.CAP_PASSIVE_PROVIDER) {
+    	if (capability == MjAPI.CAP_PASSIVE_PROVIDER || capability == MjAPI.CAP_CONNECTOR) {
     		
     		return true;
     	}
@@ -37,7 +37,7 @@ public class TileEntityMJ extends TileEntityBasicTickable {
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 
-    	if (capability == MjAPI.CAP_PASSIVE_PROVIDER) {
+    	if (capability == MjAPI.CAP_PASSIVE_PROVIDER || capability == MjAPI.CAP_CONNECTOR) {
     		
     		return (T) new MJProducer();
     	}
