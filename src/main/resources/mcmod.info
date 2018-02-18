@@ -1,0 +1,16 @@
+[
+{
+  "modid": "poweradapters",
+  "name": "Power Adapters",
+  "description": "Allows power to be adapted",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://minecraft.curseforge.com/projects/power-adapters",
+  "updateUrl": "",
+  "authorList": ["Darkhax", "Jaredlll08"],
+  "credits": "Darkosto asked for it.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
