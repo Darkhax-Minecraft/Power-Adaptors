@@ -2,6 +2,8 @@ package com.jarhax.poweradapters;
 
 import javax.annotation.Nullable;
 
+import com.jarhax.poweradapters.adapters.MjAdapter;
+
 import buildcraft.api.mj.IMjReceiver;
 import buildcraft.api.mj.MjAPI;
 import net.darkhax.bookshelf.block.tileentity.TileEntityBasic;
@@ -13,14 +15,19 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityMJ extends TileEntityBasicTickable {
 
+	private InternalBattery battery = new InternalBattery(5000, 500, 500);
+	private MjAdapter mjAdapter = new MjAdapter(battery);
+	
 	@Override
 	public void writeNBT(NBTTagCompound dataTag) {
 		
+		battery.write(dataTag);
 	}
 
 	@Override
 	public void readNBT(NBTTagCompound dataTag) {
 		
+		battery.read(dataTag);
 	}
 	
     @Override
@@ -39,7 +46,7 @@ public class TileEntityMJ extends TileEntityBasicTickable {
 
     	if (capability == MjAPI.CAP_PASSIVE_PROVIDER || capability == MjAPI.CAP_CONNECTOR) {
     		
-    		return (T) new MJProducer();
+    		return (T) this.mjAdapter;
     	}
     	
     	return super.getCapability(capability, facing);
@@ -58,7 +65,6 @@ public class TileEntityMJ extends TileEntityBasicTickable {
 				
 				if (reciever.canReceive()) {
 					
-					System.out.println("hi");
 					reciever.receivePower(this.getCapability(MjAPI.CAP_PASSIVE_PROVIDER, dir).extractPower(0, 100, false), false);
 					return;
 				}
