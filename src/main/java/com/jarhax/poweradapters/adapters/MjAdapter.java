@@ -1,12 +1,12 @@
 package com.jarhax.poweradapters.adapters;
 
+import buildcraft.api.mj.*;
 import com.jarhax.poweradapters.InternalBattery;
 
-import buildcraft.api.mj.IMjConnector;
-import buildcraft.api.mj.IMjPassiveProvider;
-import buildcraft.api.mj.IMjReceiver;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 
-public class MjAdapter extends IPowerAdapter implements IMjReceiver {
+public class MjAdapter extends IPowerAdapter implements IMjReceiver, IMjPassiveProvider {
 	
 	public MjAdapter(InternalBattery battery) {
 		
@@ -16,11 +16,29 @@ public class MjAdapter extends IPowerAdapter implements IMjReceiver {
 	@Override
 	public long getExchangeRate() {
 
-		// 1Mj = 500 internal power
-		return 500;
+		// 1Mj = 100 internal power
+		return 100;
 	}
-
-	@Override
+    
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if(capability == MjAPI.CAP_PASSIVE_PROVIDER || capability == MjAPI.CAP_CONNECTOR) {
+        
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(capability == MjAPI.CAP_PASSIVE_PROVIDER || capability == MjAPI.CAP_CONNECTOR) {
+        
+            return (T) this;
+        }
+        return null;
+    }
+    
+    @Override
 	public boolean canConnect(IMjConnector other) {
 
 		return true;
@@ -37,4 +55,9 @@ public class MjAdapter extends IPowerAdapter implements IMjReceiver {
 		
 		return this.addPower(microJoules, simulate);
 	}
+    
+    @Override
+    public long extractPower(long min, long max, boolean simulate) {
+        return this.takePower(max, simulate);
+    }
 }

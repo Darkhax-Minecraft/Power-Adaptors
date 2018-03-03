@@ -1,6 +1,8 @@
 package com.jarhax.poweradapters.adapters;
 
 import com.jarhax.poweradapters.InternalBattery;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class IPowerAdapter {
 
@@ -56,4 +58,8 @@ public abstract class IPowerAdapter {
 		
 		return this.battery;
 	}
+	
+	public abstract boolean hasCapability(Capability<?> capability, EnumFacing facing);
+    
+    public abstract <T> T getCapability(Capability<T> capability, EnumFacing facing);
 }
