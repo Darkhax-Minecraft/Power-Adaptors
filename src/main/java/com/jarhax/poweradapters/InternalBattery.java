@@ -9,7 +9,7 @@ public class InternalBattery {
     public static final String TAG_INPUT = "Input";
     public static final String TAG_OUTPUT = "Output";
     public static final String TAG_BATTERY = "InternalBattery";
-    
+
     private long stored;
 
     private long capacity;
@@ -45,7 +45,7 @@ public class InternalBattery {
         this.input = input;
         this.output = output;
     }
-    
+
     public void write (NBTTagCompound tag) {
 
         final NBTTagCompound data = new NBTTagCompound();
@@ -67,7 +67,7 @@ public class InternalBattery {
 
     public void takePower (long power) {
 
-        this.setStored(Math.min(this.getCapacity(), this.getStored() - power));
+        this.setStored(Math.max(0, this.getStored() - power));
     }
 
     public void addPower (long power) {
