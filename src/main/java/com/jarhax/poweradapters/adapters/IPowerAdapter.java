@@ -1,7 +1,10 @@
 package com.jarhax.poweradapters.adapters;
 
 import com.jarhax.poweradapters.InternalBattery;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class IPowerAdapter {
@@ -37,9 +40,13 @@ public abstract class IPowerAdapter {
 	
 	public long takePower(long requested, boolean simulated) {
 		
-		final long flooredRequested = Math.min(this.getLocalOutput(), requested);
-		final long availablePower = Math.min(flooredRequested, this.getLocalStored());
-		return Math.min(availablePower, flooredRequested);
+        final long removedPower = Math.min(this.getLocalStored(), Math.min(this.getLocalOutput(), requested));
+        if (!simulated) {
+            this.battery.takePower(removedPower);
+        }
+        
+        return removedPower;
+        
 	}
 	
 	public long addPower(long power, boolean simulated) {
@@ -58,6 +65,9 @@ public abstract class IPowerAdapter {
 		
 		return this.battery;
 	}
+	
+	public abstract void distributePower(World world, BlockPos pos);
+	
 	
 	public abstract boolean hasCapability(Capability<?> capability, EnumFacing facing);
     

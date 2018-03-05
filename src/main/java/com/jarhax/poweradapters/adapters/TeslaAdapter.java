@@ -2,8 +2,12 @@ package com.jarhax.poweradapters.adapters;
 
 import com.jarhax.poweradapters.InternalBattery;
 import com.jarhax.poweradapters.adapters.caps.BaseContainerTesla;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TeslaAdapter extends IPowerAdapter {
@@ -21,6 +25,18 @@ public class TeslaAdapter extends IPowerAdapter {
         
         // Tesla = 25 internal power
         return 25;
+    }
+    
+    @Override
+    public void distributePower(World world, BlockPos pos) {
+        for(EnumFacing dir : EnumFacing.VALUES) {
+            TileEntity tile = world.getTileEntity(pos.offset(dir));
+            if(tile != null)
+                if(tile.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, dir.getOpposite())) {
+                    BaseTeslaContainer cont = (BaseTeslaContainer) tile.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, dir.getOpposite());
+                    container.takePower(cont.givePower(container.takePower(container.getOutputRate(), true), false), false);
+                }
+        }
     }
     
     @Override

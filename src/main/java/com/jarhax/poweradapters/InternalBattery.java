@@ -58,7 +58,13 @@ public class InternalBattery {
 		this.setInput(data.getLong("Input"));
 		this.setInput(data.getLong("Ouput"));
 	}
-
+    
+    
+    public void takePower(long power) {
+        
+        this.setStored(Math.min(this.getCapacity(), this.getStored() - power));
+    }
+    
 	public void addPower(long power) {
 		
 		this.setStored(Math.min(this.getCapacity(), this.getStored() + power));

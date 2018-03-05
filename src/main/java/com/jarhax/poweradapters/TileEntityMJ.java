@@ -2,7 +2,7 @@ package com.jarhax.poweradapters;
 
 
 import buildcraft.api.mj.*;
-import cofh.redstoneflux.api.IEnergyReceiver;
+import cofh.redstoneflux.api.*;
 import com.jarhax.poweradapters.adapters.*;
 import net.darkhax.bookshelf.block.tileentity.TileEntityBasicTickable;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,9 +12,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
-public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyReceiver {
+@Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux")
+public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyReceiver, IEnergyProvider {
     
     private InternalBattery battery = new InternalBattery(5000, 500, 500);
     private List<IPowerAdapter> adapters = new ArrayList<>();
@@ -55,8 +57,6 @@ public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyRece
     
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-    
-    
         for(IPowerAdapter adapter : adapters) {
             if(adapter.hasCapability(capability, facing)){
                 return true;
@@ -84,21 +84,10 @@ public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyRece
     @Override
     public void onEntityUpdate() {
         
-        for(EnumFacing dir : EnumFacing.values()) {
-            
-            TileEntity tile = world.getTileEntity(this.pos.offset(dir));
-            
-            if(tile != null && tile.hasCapability(MjAPI.CAP_RECEIVER, dir.getOpposite())) {
-                
-                IMjReceiver reciever = tile.getCapability(MjAPI.CAP_RECEIVER, dir.getOpposite());
-                
-                if(reciever.canReceive()) {
-                    
-                    reciever.receivePower(this.getCapability(MjAPI.CAP_PASSIVE_PROVIDER, dir).extractPower(0, 100, false), false);
-                    return;
-                }
-            }
+        if(!world.isRemote){
+            adapters.forEach(iPowerAdapter -> iPowerAdapter.distributePower(world, pos));
         }
+        
     }
     
     @Override
@@ -123,5 +112,11 @@ public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyRece
     @Optional.Method(modid = "redstoneflux")
     public boolean canConnectEnergy(EnumFacing from) {
         return true;
+    }
+    
+    @Override
+    @Optional.Method(modid = "redstoneflux")
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+        return (int) rfAdapter.takePower(maxExtract, simulate);
     }
 }
