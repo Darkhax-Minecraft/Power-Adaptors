@@ -7,14 +7,15 @@ import net.minecraft.world.World;
 
 public class BlockBasicMJ extends BlockTileEntity {
 
-	protected BlockBasicMJ() {
-		
-		super(Material.IRON);
-	}
+    protected BlockBasicMJ () {
 
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		// TODO Auto-generated method stub
-		return new TileEntityMJ();
-	}
+        super(Material.IRON);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity (World worldIn, int meta) {
+
+        // TODO Auto-generated method stub
+        return new TileEntityMJ();
+    }
 }
