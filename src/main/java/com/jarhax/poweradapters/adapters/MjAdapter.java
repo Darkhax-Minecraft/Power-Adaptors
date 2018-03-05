@@ -29,10 +29,16 @@ public class MjAdapter extends IPowerAdapter implements IMjReceiver, IMjPassiveP
     public void distributePower (World world, BlockPos pos) {
 
         for (final EnumFacing facing : EnumFacing.VALUES) {
+
             if (world.getTileEntity(pos.offset(facing)) != null && world.getTileEntity(pos.offset(facing)).hasCapability(MjAPI.CAP_RECEIVER, facing.getOpposite())) {
+
                 final IMjReceiver storage = world.getTileEntity(pos.offset(facing)).getCapability(MjAPI.CAP_RECEIVER, facing.getOpposite());
+
                 final long power = this.extractPower(0, this.getLocalOutput(), true);
-                this.extractPower(0, storage.receivePower(power * MjAPI.ONE_MINECRAFT_JOULE, false) / MjAPI.ONE_MINECRAFT_JOULE, false);
+                final long unconsumed = storage.receivePower(power * MjAPI.ONE_MINECRAFT_JOULE, true);
+
+                this.extractPower(0, power - unconsumed, false);
+                storage.receivePower(power * MjAPI.ONE_MINECRAFT_JOULE, false);
             }
         }
     }
