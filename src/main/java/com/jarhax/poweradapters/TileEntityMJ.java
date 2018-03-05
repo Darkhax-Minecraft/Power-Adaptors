@@ -89,7 +89,6 @@ public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyRece
         if (!this.world.isRemote) {
             this.adapters.forEach(iPowerAdapter -> iPowerAdapter.distributePower(this.world, this.pos));
         }
-
     }
 
     @Override

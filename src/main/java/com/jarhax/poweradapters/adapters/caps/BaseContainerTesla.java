@@ -10,7 +10,7 @@ public class BaseContainerTesla extends BaseTeslaContainer {
     private IPowerAdapter adapter;
 
     public BaseContainerTesla () {
-        
+
     }
 
     public BaseContainerTesla (IPowerAdapter adapter) {

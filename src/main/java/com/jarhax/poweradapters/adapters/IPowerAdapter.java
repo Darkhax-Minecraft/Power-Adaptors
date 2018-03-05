@@ -41,12 +41,13 @@ public abstract class IPowerAdapter {
     public long takePower (long requested, boolean simulated) {
 
         final long removedPower = Math.min(this.getLocalStored(), Math.min(this.getLocalOutput(), requested));
+
         if (!simulated) {
+
             this.battery.takePower(removedPower);
         }
 
         return removedPower;
-
     }
 
     public long addPower (long power, boolean simulated) {
