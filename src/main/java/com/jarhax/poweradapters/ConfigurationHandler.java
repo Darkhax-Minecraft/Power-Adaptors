@@ -20,6 +20,7 @@ public class ConfigurationHandler {
     public static void initConfig (File file) {
 
         config = new Configuration(file);
+        syncConfig();
     }
 
     public static void syncConfig () {
