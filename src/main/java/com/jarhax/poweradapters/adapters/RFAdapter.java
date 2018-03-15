@@ -1,5 +1,6 @@
 package com.jarhax.poweradapters.adapters;
 
+import com.jarhax.poweradapters.ConfigurationHandler;
 import com.jarhax.poweradapters.InternalBattery;
 
 import cofh.redstoneflux.api.IEnergyReceiver;
@@ -19,7 +20,7 @@ public class RFAdapter extends IPowerAdapter {
     public long getExchangeRate () {
 
         // Tesla = 25 internal power
-        return 25;
+        return ConfigurationHandler.worthRedstoneFlux;
     }
 
     @Override

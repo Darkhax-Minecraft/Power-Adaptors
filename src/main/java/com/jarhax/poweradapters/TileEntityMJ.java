@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Optional;
 @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux")
 public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyReceiver, IEnergyProvider {
 
-    private final InternalBattery battery = new InternalBattery(5000, 500, 500);
+    private final InternalBattery battery = new InternalBattery(ConfigurationHandler.maxCapacity, ConfigurationHandler.maxInput, ConfigurationHandler.maxOutput);
     private final List<IPowerAdapter> adapters = new ArrayList<>();
     private IPowerAdapter mjAdapter;
     private IPowerAdapter teslaAdapter;

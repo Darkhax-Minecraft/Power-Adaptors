@@ -1,5 +1,6 @@
 package com.jarhax.poweradapters.adapters;
 
+import com.jarhax.poweradapters.ConfigurationHandler;
 import com.jarhax.poweradapters.InternalBattery;
 
 import buildcraft.api.mj.IMjConnector;
@@ -22,7 +23,7 @@ public class MjAdapter extends IPowerAdapter implements IMjReceiver, IMjPassiveP
     public long getExchangeRate () {
 
         // 1Mj = 100 internal power
-        return 100;
+        return ConfigurationHandler.worthMinecraftJoules;
     }
 
     @Override

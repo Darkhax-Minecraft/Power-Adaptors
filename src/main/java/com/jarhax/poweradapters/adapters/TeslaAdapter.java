@@ -1,5 +1,6 @@
 package com.jarhax.poweradapters.adapters;
 
+import com.jarhax.poweradapters.ConfigurationHandler;
 import com.jarhax.poweradapters.InternalBattery;
 import com.jarhax.poweradapters.adapters.caps.BaseContainerTesla;
 
@@ -25,7 +26,7 @@ public class TeslaAdapter extends IPowerAdapter {
     public long getExchangeRate () {
 
         // Tesla = 25 internal power
-        return 25;
+        return ConfigurationHandler.worthTesla;
     }
 
     @Override

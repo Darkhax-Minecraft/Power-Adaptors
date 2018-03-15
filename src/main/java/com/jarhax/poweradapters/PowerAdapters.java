@@ -20,6 +20,8 @@ public class PowerAdapters {
     @EventHandler
     public void onPreInit (FMLPreInitializationEvent event) {
 
+        ConfigurationHandler.initConfig(event.getSuggestedConfigurationFile());
+
         loadedMj = Loader.isModLoaded("buildcraftenergy");
         loadedTesla = Loader.isModLoaded("tesla");
         loadedRf = Loader.isModLoaded("redstoneflux");
