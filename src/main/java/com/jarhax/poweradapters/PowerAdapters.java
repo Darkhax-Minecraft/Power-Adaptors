@@ -22,7 +22,7 @@ public class PowerAdapters {
 
         ConfigurationHandler.initConfig(event.getSuggestedConfigurationFile());
 
-        loadedMj = Loader.isModLoaded("buildcraftenergy");
+        loadedMj = Loader.isModLoaded("buildcraftcore");
         loadedTesla = Loader.isModLoaded("tesla");
         loadedRf = Loader.isModLoaded("redstoneflux");
 
