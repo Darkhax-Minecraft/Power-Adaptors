@@ -36,7 +36,7 @@ public class MjAdapter extends IPowerAdapter implements IMjReceiver, IMjPassiveP
                 final IMjReceiver storage = world.getTileEntity(pos.offset(facing)).getCapability(MjAPI.CAP_RECEIVER, facing.getOpposite());
 
                 final long power = this.extractPower(0, this.getLocalOutput(), true);
-                final long unconsumed = storage.receivePower(power * MjAPI.ONE_MINECRAFT_JOULE, true);
+                final long unconsumed = storage.receivePower(power * MjAPI.ONE_MINECRAFT_JOULE, true) / MjAPI.ONE_MINECRAFT_JOULE;
 
                 this.extractPower(0, power - unconsumed, false);
                 storage.receivePower(power * MjAPI.ONE_MINECRAFT_JOULE, false);
