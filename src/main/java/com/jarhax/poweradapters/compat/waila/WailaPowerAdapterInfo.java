@@ -29,6 +29,8 @@ public class WailaPowerAdapterInfo implements IWailaPlugin, IWailaDataProvider {
 
             final InternalBattery battery = new InternalBattery(accessor.getNBTData());
             currenttip.add(String.format("Power %d / %d", battery.getStored(), battery.getCapacity()));
+            currenttip.add(String.format("Input: %d", battery.getInput()));
+            currenttip.add(String.format("Output: %d", battery.getOutput()));
         }
 
         return currenttip;
