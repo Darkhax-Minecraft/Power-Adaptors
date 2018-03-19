@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "poweradapters", name = "Power Adapters", version = "@VERSION@", dependencies = "", certificateFingerprint = "@FINGERPRINT@")
+@Mod(modid = "poweradapters", name = "Power Adapters", version = "@VERSION@", dependencies = "required-after:bookshelf@[2.3.537,)", certificateFingerprint = "@FINGERPRINT@")
 public class PowerAdapters {
 
     private static RegistryHelper helper = new RegistryHelper("poweradapters").enableAutoRegistration().setTab(CreativeTabs.MISC);
