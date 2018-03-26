@@ -31,19 +31,41 @@ public class TileEntityMJ extends TileEntityBasicTickable implements IEnergyRece
     public TileEntityMJ () {
 
         if (PowerAdapters.loadedMj) {
-            this.mjAdapter = new MjAdapter(this.battery);
-            this.adapters.add(this.mjAdapter);
+
+            this.initMJ();
         }
         if (PowerAdapters.loadedTesla) {
-            this.teslaAdapter = new TeslaAdapter(this.battery);
-            this.adapters.add(this.teslaAdapter);
+
+            this.initTesla();
         }
         if (PowerAdapters.loadedRf) {
-            this.rfAdapter = new RFAdapter(this.battery);
-            this.adapters.add(this.rfAdapter);
+
+            this.initRF();
         }
+
         this.feAdapter = new FEAdapter(this.battery);
         this.adapters.add(this.feAdapter);
+    }
+
+    @Optional.Method(modid = "buildcraftcore")
+    private void initMJ () {
+
+        this.mjAdapter = new MjAdapter(this.battery);
+        this.adapters.add(this.mjAdapter);
+    }
+
+    @Optional.Method(modid = "tesla")
+    private void initTesla () {
+
+        this.teslaAdapter = new TeslaAdapter(this.battery);
+        this.adapters.add(this.teslaAdapter);
+    }
+
+    @Optional.Method(modid = "redstoneflux")
+    private void initRF () {
+
+        this.rfAdapter = new RFAdapter(this.battery);
+        this.adapters.add(this.rfAdapter);
     }
 
     @Override
