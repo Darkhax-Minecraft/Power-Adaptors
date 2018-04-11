@@ -44,7 +44,7 @@ public abstract class IPowerAdapter {
 
         if (!simulated) {
 
-            this.battery.takePower(removedPower);
+            this.battery.takePower(removedPower*getExchangeRate());
         }
 
         return removedPower;
@@ -53,13 +53,12 @@ public abstract class IPowerAdapter {
     public long addPower (long power, boolean simulated) {
 
         final long acceptedPower = Math.min(this.getLocalInput(), power);
-
         if (!simulated) {
 
-            this.battery.addPower(acceptedPower);
+            this.battery.addPower(acceptedPower*getExchangeRate());
         }
 
-        return power - acceptedPower;
+        return acceptedPower;
     }
 
     public InternalBattery getInternalBattery () {
