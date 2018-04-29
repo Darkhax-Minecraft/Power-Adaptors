@@ -52,7 +52,13 @@ public abstract class IPowerAdapter {
 
     public long addPower (long power, boolean simulated) {
 
-        final long acceptedPower = Math.min(this.getLocalInput(), power);
+        long acceptedPower = Math.min(this.getLocalInput(), power);
+        
+        if (this.battery.getStored() == this.battery.getCapacity()) {
+            
+            acceptedPower = 0;
+        }
+        
         if (!simulated) {
 
             this.battery.addPower(acceptedPower*getExchangeRate());
