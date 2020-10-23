@@ -74,11 +74,11 @@ repositories {
 	    // Just Enough Items
 		url = "http://dvs1.progwml6.com/files/maven"
 	}
-	
-	maven {
-    
-	    // Hwyla
-        url 'http://tehnut.info/maven'
+
+    maven {
+
+        // Hwyla
+        url "https://maven.tehnut.info"
     }
 }
 
