@@ -1,194 +1,75 @@
 buildscript {
-
     repositories {
-    
-        jcenter()
-        
-        maven { 
-        
-            url = 'http://files.minecraftforge.net/maven'
-        }
-        
-        maven {
-
-            url 'https://plugins.gradle.org/m2/'
-        }
+        maven { url = 'https://maven.minecraftforge.net/' }
+        mavenCentral()
     }
-    
     dependencies {
-    
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.0'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'maven-publish' 
+apply plugin: 'net.minecraftforge.gradle'
 
-apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/generic/markdown-git-changelog.gradle'
-apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/minecraft/artifacts.gradle'
-apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/minecraft/maven.gradle'
+archivesBaseName = "${mod_name}-Forge"
 
-version = "${mod_version}" + getBuildNumber()
-group = "${mod_group}"
-archivesBaseName = "${mod_name}-${version_minecraft}"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
 
-    version = "${version_minecraft}-${version_forge}"
-    mappings = "${version_mcp}"
-    runDir = 'run'
-    
-    replace '@VERSION@', project.version
-    replace '@FINGERPRINT@', project.findProperty('signSHA1')
-    replaceIn "${mod_class}.java"
-}
+    mappings channel: 'snapshot', version: '20171003-1.12'
 
-repositories {
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+        }
 
-    maven {
-
-	    // Tesla
-		// Bookshelf
-        url 'https://maven.mcmoddev.com'
-    }
-    
-    maven {
-    
-	    // Buildcraft
-        url 'https://www.mod-buildcraft.com/maven/'
-    }
-	
-    maven {
-	
-	    // Redstone Flux
-		url = "http://maven.covers1624.net"
-	}
-	
-    maven {
-	
-	    // Just Enough Items
-		url = "http://dvs1.progwml6.com/files/maven"
-	}
-	
-	maven {
-    
-	    // Hwyla
-        url 'https://maven.tehnut.info'
+        server {
+            property 'forge.logging.console.level', 'debug'
+        }
     }
 }
 
 dependencies {
-
-    deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:${version_bookshelf}"
-	deobfCompile "net.darkhax.tesla:Tesla-1.12.2:${version_tesla}"
-	deobfCompile "com.mod-buildcraft:buildcraft:${version_buildcraft}"
-	deobfCompile "cofh:RedstoneFlux:${version_rf}:deobf"
-	deobfCompile "mcp.mobius.waila:Hwyla:${version_hwyla}"
-    deobfCompile "mezz.jei:jei_1.12.2:${version_jei}"
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    
+    implementation fg.deobf("net.darkhax.bookshelf:Bookshelf-1.12.2:${version_bookshelf}")
+	implementation fg.deobf("net.darkhax.tesla:Tesla-1.12.2:${version_tesla}")
+	implementation fg.deobf("cofh:RedstoneFlux:${version_rf}:deobf")
+    implementation fg.deobf("curse.maven:hwyla-253449:2568751")
+    implementation fg.deobf("curse.maven:buildcraft-61811:3204475")
+    //implementation fg.deobf("mezz.jei:jei_1.12.2:${version_jei}")
 }
 
-processResources {
-
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-    
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    from(sourceSets.main.resources.srcDirs) {
-    
-        exclude 'mcmod.info'
-    }
-    
-    from 'LICENSE'
-}
-
-String getBuildNumber() {
-
-    return System.getenv('BUILD_NUMBER') ? System.getenv('BUILD_NUMBER') : System.getenv('TRAVIS_BUILD_NUMBER') ? System.getenv('TRAVIS_BUILD_NUMBER') : '0';
-}
-
-//Shuts up javadoc failures
-if (JavaVersion.current().isJava8Compatible()) {
-
-    allprojects {
-
-        tasks.withType(Javadoc) {
-
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "${mod_name}",
+                "Specification-Vendor": "Darkhax",
+                "Specification-Version": "1",
+                "Implementation-Title": "${mod_name}",
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"Darkhax",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
 }
 
-curseforge {
+jar.finalizedBy('reobfJar')
 
-    apiKey = System.getenv('curse_auth') ? System.getenv('curse_auth') : 0 
-    def versions = "${curse_versions}".split(', ')
+repositories {
 
-    project {
-
-        id = "${curse_project}"
-        releaseType = 'alpha'
-        changelog = getGitChangelog
-        changelogType = 'markdown'
-
-        versions.each {
-
-            addGameVersion "${it}"
-        }
-
-        if (project.hasProperty('curse_requirements') || project.hasProperty('curse_optionals')) {
-
-            mainArtifact(jar) {
-
-                relations {
-
-                    if (project.hasProperty('curse_requirements')) {
-                        def requirements = "${curse_requirements}".split(', ')
-                        requirements.each {
-
-                            requiredLibrary "${it}"
-                        }
-                    }
-
-                    if (project.hasProperty('curse_optionals')) {
-                        def optionals = "${curse_optionals}".split(', ')
-                        optionals.each {
-
-                            optionalLibrary "${it}"
-                        }
-                    }
-                }
-            }
-        }
-
-        addArtifact(sourcesJar)
-        addArtifact(javadocJar)
-        addArtifact(deobfJar)
+    maven {
+        // Bookshelf / JEI / Tesla
+        url 'https://maven.blamejared.com/'
+    }
+	
+    maven {
+	    // Redstone Flux
+		url = "http://maven.covers1624.net"
+	}
+    
+    maven {
+        url "https://cursemaven.com"
     }
 }
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-
-    onlyIf {
-    
-        project.hasProperty('keyStore')
-    }
-    
-    keyStore = project.findProperty('keyStore')
-    alias = project.findProperty('keyStoreAlias')
-    storePass = project.findProperty('keyStorePass')
-    keyPass = project.findProperty('keyStoreKeyPass')
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-build.dependsOn signJar
