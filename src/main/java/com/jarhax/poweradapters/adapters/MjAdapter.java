@@ -73,18 +73,28 @@ public class MjAdapter extends IPowerAdapter implements IMjReceiver, IMjPassiveP
     @Override
     public long getPowerRequested () {
 
-        return Math.min(this.getLocalInput(), this.getLocalCapacity() - this.getLocalStored());
+        return MjAPI.ONE_MINECRAFT_JOULE * Math.min(this.getLocalInput(), this.getLocalCapacity() - this.getLocalStored());
     }
 
     @Override
     public long receivePower (long microJoules, boolean simulate) {
 
-        return this.addPower(microJoules, simulate);
+        long accepted = this.addPower(microJoules / MjAPI.ONE_MINECRAFT_JOULE, simulate);
+        return microJoules - accepted * MjAPI.ONE_MINECRAFT_JOULE;
     }
 
     @Override
     public long extractPower (long min, long max, boolean simulate) {
 
-        return this.takePower(max, simulate);
+        long extractable = this.takePower(max / MjAPI.ONE_MINECRAFT_JOULE, true);
+        if (extractable * MjAPI.ONE_MINECRAFT_JOULE < min) {
+            return 0;
+        }
+
+        if (!simulate) {
+            this.takePower(max / MjAPI.ONE_MINECRAFT_JOULE, false);
+        }
+
+        return extractable * MjAPI.ONE_MINECRAFT_JOULE;
     }
 }
